@@ -1,0 +1,3 @@
+class Comms():
+    SOCKET_TIMEOUT = 5
+    RECONNECTION_TIMER = 20
