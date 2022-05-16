@@ -50,6 +50,17 @@ class DataComms():
         while self._runServer:
             if not self._readyServer:
                 mainServer = self._open_server()
+                sleep(1)
+                continue
+            
+            try:
+                client, address = mainServer.accept()
+            except Exception as err:
+                sleep(Comms.RECONNECTION_TIMER)
+                continue
+        
+            port = address[1]
+            
                 
 class Mqtt():
     def __init(self):
