@@ -1,67 +1,59 @@
 import socket
 from time import sleep
-from config.parameter import Comms
+from config.parameter import Sock
 
-class DataComms():
-    def __init__(self,name:str, ip:str, port:int, protocol:bool):
+class TcpServer():
+    def __init__(self,name:str, ip:str, port:int):
         self.name = name
         self.ip = ip
         self.port = port
-        self.protocol = protocol  # True : TCP, False : UDP
 
         self._runServer = True
         self._readyServer = False
-        self._runClient = True
-        self._readyClient = False
     
-    def _open_server(self) -> socket.socket:
-        funcName = '_open_server'
+    def _open_tcp_server(self) -> socket.socket:
+        funcName = '_open_tcp_server'
         COMMS_ADDRESS = self.ip
-        timeout = Comms.SOCKET_TIMEOUT
+        timeout = Sock.SOCKET_TIMEOUT
         while not self._readyServer:
             try:
-                if self.protocol == True:
-                    tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    tcpServer.bind(COMMS_ADDRESS)
-                    tcpServer.listen()
-                    if timeout != None and type(timeout) == int: tcpServer.settimeout(timeout)
-                    self._readyServer = True
+                tcpServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                tcpServer.bind(COMMS_ADDRESS)
+                tcpServer.listen()
+                if timeout != None and type(timeout) == int: tcpServer.settimeout(timeout)
+                self._readyServer = True
             except (ConnectionError, ConnectionAbortedError, ConnectionRefusedError, ConnectionResetError) as err:
                 self._readyServer = False
                 tcpServer.close()
-                sleep(Comms.RECONNECTION_TIMER)
-            try:
-                if self.protocol == False:
-                    udpServer = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                    udpServer.bind(COMMS_ADDRESS)
-                    self._readyServer = True
-            except (ConnectionError, ConnectionAbortedError, ConnectionRefusedError, ConnectionResetError) as err:
-                self._readyServer = False
-                udpServer.close()
-                sleep(Comms.RECONNECTION_TIMER)
-        if self.protocol:
-            return tcpServer
-        elif not self.protocol:
-            return udpServer
+                sleep(Sock.RECONNECTION_TIMER)
+        return tcpServer
     
-    def main_server(self):
-        funcName = 'main_server'
+    def _main_tcp_server(self):
+        funcName = '_main_tcp_server'
 
         while self._runServer:
             if not self._readyServer:
-                mainServer = self._open_server()
+                mainServer = self._open_tcp_server()
                 sleep(1)
                 continue
             
             try:
                 client, address = mainServer.accept()
             except Exception as err:
-                sleep(Comms.RECONNECTION_TIMER)
+                sleep(Sock.RECONNECTION_TIMER)
                 continue
         
             port = address[1]
             
+            # 
+            
                 
+class UdpServer():
+    def __init__(self,name:str, ip:str, port:int):
+        self.name = name
+        self.ip = ip
+        self.port = port
+        
 class Mqtt():
     def __init(self):
         pass
