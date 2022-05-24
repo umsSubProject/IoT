@@ -1,6 +1,7 @@
 import socket
 from time import sleep
 from config.parameter import Sock
+import paho.mqtt.client as mqtt
 
 class TcpServer():
     def __init__(self,name:str, ip:str, port:int):
@@ -10,7 +11,20 @@ class TcpServer():
 
         self._runServer = True
         self._readyServer = False
-    
+
+    def get_ip():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # doesn't even have to be reachable
+            s.connect(('10.255.255.255', 1))
+            IP = s.getsockname()[0]
+        except Exception:
+            IP = '127.0.0.1'
+            print(f'not ')
+        finally:
+            s.close()
+        return IP
+
     def _open_tcp_server(self) -> socket.socket:
         funcName = '_open_tcp_server'
         COMMS_ADDRESS = self.ip
@@ -56,4 +70,5 @@ class UdpServer():
         
 class Mqtt():
     def __init(self):
-        pass
+        mqttC = mqtt.Client()
+        
