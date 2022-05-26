@@ -14,8 +14,12 @@ class MqttConfig:
     BUTTON_TOPIC = 'button/#'
 
 class ModuleState:
-    # 0.input
+    # 0.initialize
     INPUT_STATE = True
+    MONITOR_STATE = True
 
     # 1.network
     NETWORK_STATE = True
+
+    # 2.web
+    WEB_STATE = True
