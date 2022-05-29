@@ -1,7 +1,9 @@
 import socket
 from time import sleep
-from config.parameter import Sock
 import paho.mqtt.client as mqtt
+
+from iotConfig.Classes import MqttData
+from iotConfig.parameter import Sock
 
 class TcpServer():
     def __init__(self,name:str, ip:str, port:int):
@@ -73,16 +75,20 @@ class Mqtt():
     Topic -> Location/Sensor_Type/Subject
     ex) house/room/switch/light
     """
-    def __init(self, ip, queue):
+    def __init__(self, ip, queue):
         self.mqttC = mqtt.Client()
         self.queue_msg = queue
         self.mqttC.on_connect = self.on_connect
+        self.mqttC.on_disconnect = self.on_disconnect
+        self.mqttC.on_reconnect = self.on_reconnect
         self.mqttC.on_message = self.on_message
         self.ip = ip
+        
+        self.mqtt = MqttData()
         #
 
-    def on_connect(self):
-        pass
+    def on_connect(self, client, userdata, flag, rc):
+        print(f'Connected with result code {rc}')
 
     def on_message(self):
         pass
