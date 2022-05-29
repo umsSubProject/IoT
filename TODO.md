@@ -1,7 +1,7 @@
-1. Need to update folder data of template
+- Need to update folder data of template(complete)
 
-2. To develop socket network
-  1) TCP/UDP
-  2) MQTT
+- To develop socket network
+  1) MQTT
+  2) TCP/UDP
 
-3. 
+- Define dataclass and type

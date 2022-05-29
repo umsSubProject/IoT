@@ -5,13 +5,16 @@ class ADDRESS:
 
 class MqttConfig:
     BROKER_HOST = '127.0.0.1'
+    
+    LOCATION = 'house/admin'
 
-    LOCATION = {'192.168.1':'house/admin'}
+    LOCATION = {'192.168.1':'LOCATION'}
 
     SERVER_TOPIC = '#'
     SENSOR_TOPIC = 'sensor/#'
     LIGHT_TOPIC = 'light/#'
     BUTTON_TOPIC = 'button/#'
+    STATE_TOPIC = 'state/#'
 
 class ModuleState:
     # 0.initialize
@@ -23,3 +26,11 @@ class ModuleState:
 
     # 2.web
     WEB_STATE = True
+    
+    
+    INIT_STATE = {
+        'INPUT_STATE' : INPUT_STATE, 
+        'MONITOR_STATE' : MONITOR_STATE, 
+        'NETWORK_STATE' : NETWORK_STATE, 
+        'WEB_STATE' : WEB_STATE,
+        }
