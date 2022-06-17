@@ -33,3 +33,13 @@ class MqttData(Message):
 
     def set_data_from_string(self, data: str):
         funcName = 'set_data_from_string'
+        
+
+class ConvertType():
+    str_to_num = {}
+    name_to_str = {}
+    
+class Device():
+    def __init__(self, name = ''):
+        self.name = name
+        self.status = 0
