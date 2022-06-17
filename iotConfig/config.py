@@ -16,21 +16,37 @@ class MqttConfig:
     BUTTON_TOPIC = 'button/#'
     STATE_TOPIC = 'state/#'
 
-class ModuleState:
+class Module:
     # 0.initialize
-    INPUT_STATE = True
-    MONITOR_STATE = True
+    INPUT_STATE = 1
+    INPUT_STR = 'input'
 
     # 1.network
-    NETWORK_STATE = True
+    NETWORK_STATE = 0
+    NETWORK_STR = 'network'
 
     # 2.web
-    WEB_STATE = True
+    WEB_STATE = 0
+    WEB_STR = 'web'
     
+    # 3.monitor
+    MONITOR_STATE = 0
+    MONITOR_STR = 'monitor'
     
-    INIT_STATE = {
-        'INPUT_STATE' : INPUT_STATE, 
-        'MONITOR_STATE' : MONITOR_STATE, 
-        'NETWORK_STATE' : NETWORK_STATE, 
-        'WEB_STATE' : WEB_STATE,
+    STATE = {
+        INPUT_STR : INPUT_STATE, 
+        NETWORK_STR : MONITOR_STATE, 
+        WEB_STR : NETWORK_STATE, 
+        MONITOR_STR : WEB_STATE,
         }
+    
+    
+    
+class MainMessege:
+    DEVICE_STR = 'device'
+    MODULE_STR = 'module'
+    
+    CMD = {
+        DEVICE_STR :1,
+        MODULE_STR : Module,
+    }

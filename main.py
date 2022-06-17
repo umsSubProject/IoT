@@ -1,6 +1,7 @@
 import socket
 import logging
 import time
+import ctypes
 from threading import Thread
 from multiprocessing import Queue, Process
 from ctypes import windll
@@ -18,81 +19,95 @@ class IoT():
     def __init__(self):
         self.name = 'IoT_main'
 
-        self.inputThread = Thread(target = self.input_module)
-        self.monitorThread = Thread(target = self.monitor_module)
-        self.networkThread = Thread(target = self.network_module)
-        self.webThread = Thread(target = self.web_module)
+        self.inputThread = Thread()
+        self.monitorThread = Thread()
+        self.networkThread = Thread()
+        self.webThread = Thread()
         
-        self.mqtt = None
+        # self._inputState = ModuleState.INIT_STATE[ModuleState.INPUT_STR]
+        # self._monitorState = ModuleState.INIT_STATE[ModuleState.MONITOR_STR]
+        # self._networkState = ModuleState.INIT_STATE[ModuleState.NETWORK_STR]
+        # self._webState = ModuleState.INIT_STATE[ModuleState.WEB_STR]
+
+        self._threadState = ModuleState.INIT_STATE
+        
+        self.mqtt = Mqtt()
         self.web = None
         self.Monitor = None
 
     def input_module(self):
-        while 1:
-            input_msg = input('Please enter a command : ').strip()
-            if not input_msg: continue
+        funcName = 'MODULE_INPUT'
+        while self._threadState[ModuleState.INPUT_STR]:
+            input_msg = input('Please enter a command : ').strip().split()
+            if not input_msg or len(input_msg)<2:
+                print(f'No information found. Please enter it again.')
+                continue
             try:
-                id, cmd = input_msg.split()
-                if id in ModuleState.INIT_STATE:
-                    ModuleState.INIT_STATE[id] = cmd
+                header, cmd_bool = input_msg[0].lower(), int(input_msg[1])
+                if header in ModuleState.INIT_STATE:
+                    self._threadState[header] = cmd_bool
             except Exception as err:
-                print('input error')
-                print(f'{err = }')
+                print(f'Error {funcName} : {err}')
+                print(f'No information found. Please enter it again.')
+        else:
+            print(f'To fail to input module... {ModuleState.INPUT_STR = }')
+            print('Exit Program...')
 
     def network_module(self):
-        if not self.mqtt:
-            self.mqtt = Mqtt()
         self.mqtt.run()
 
     def web_module(self):
-        pass
+        funcName = 'MODULE_WEB'
+        while self._threadState[ModuleState.WEB_STR]:
+            continue
 
     def monitor_module(self):
-        pass
+        funcName = 'MODULE_MONITOR'
+        while self._threadState[ModuleState.MONITOR_STR]:
+            continue
+    
+    def _raise_exception(self, id, name = 'none'):
+        res = ctypes.pythonapi.PyThreadState_SetAsyncExc(id, ctypes.py_object(SystemExit))
+        
+        if res > 1:
+            ctypes.pythonapi.PyThreadState_SetAsyncExc(id,0)
+            print(f'Exception raise failure name:{name}({id})')
 
     def run(self):
-        inputState = ModuleState.INIT_STATE['INPUT_STATE']
-        monitorState = ModuleState.INIT_STATE['MONITOR_STATE']
-        networkState = ModuleState.INIT_STATE['NETWORK_STATE']
-        webState = ModuleState.INIT_STATE['WEB_STATE']
+        funcName = 'RUN'
 
         while 1:
             # 0.command
-            if inputState and not self.inputThread.is_alive():
+            if self._threadState[ModuleState.INPUT_STR] and not self.inputThread.is_alive():
                 try:
-                    inputState = False
+                    self.inputThread = Thread(target = self.input_module, name = 'INPUT')
                     self.inputThread.start()
                 except Exception as err:
-                    inputState = ModuleState.INIT_STATE['INPUT_STATE']
-                    print(err)
-
+                    print(f'Error {funcName} : {err}')
 
             # 1.network
-            if networkState and not self.inputThread.is_alive():
+            if self._threadState[ModuleState.NETWORK_STR] and not self.networkThread.is_alive():
                 try:
-                    networkState = False
+                    self.networkThread = Thread(target = self.network_module, name = 'NETWORK', daemon = True)
                     self.networkThread.start()
                 except Exception as err:
-                    networkState = ModuleState.INIT_STATE['NETWORK_STATE']
-                    print(err)
+                    print(f'Error {funcName} : {err}')
 
             # 2.web
-            if webState and not not self.webThread.is_alive():
+            if self._threadState[ModuleState.WEB_STR] and not not self.webThread.is_alive():
                 try:
-                    webState = False
+                    self.webThread = Thread(target = self.web_module, name = 'WEB', daemon = True)
                     self.webThread.start()
                 except Exception as err:
-                    webState = ModuleState.INIT_STATE['WEB_STATE']
-                    print(err)
+                    print(f'Error {funcName} : {err}')
 
             # 3.monitor
-            if monitorState and not self.inputThread.is_alive():
+            if self._threadState[ModuleState.MONITOR_STR] and not self.monitorThread.is_alive():
                 try:
-                    monitorState = False
+                    self.monitorThread = Thread(target = self.monitor_module, name = 'MONITOR', daemon = True)
                     self.monitorThread.start()
                 except Exception as err:
-                    monitorState = ModuleState.INIT_STATE['MONITOR_STATE']
-                    print(err)
+                    print(f'Error {funcName} : {err}')
         
         
 
