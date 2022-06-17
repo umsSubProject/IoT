@@ -1,0 +1,4 @@
+220616
+ 1. Define data class -> dict dict dict...
+ 2. check google proto buffer type. if can apply proto, construct a data structure.
+ 3. 
