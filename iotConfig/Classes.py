@@ -39,7 +39,18 @@ class ConvertType():
     str_to_num = {}
     name_to_str = {}
     
-class Device():
+class Device(Message):
     def __init__(self, name = ''):
-        self.name = name
-        self.status = 0
+        super().__init__()
+        self.location = ''
+        
+    def get_stat(self):
+        return {'name': self.name,
+                'status': self.status,
+                'lastUpdate': self.lastUpdate,
+                'updateCount': self.updateCnt,
+                'updateRate': self.updateRate,
+                'location': self.location,}
+        
+    def set_data(self):
+        return 0

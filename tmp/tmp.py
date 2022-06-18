@@ -1,15 +1,9 @@
-from iotConfig.config import ModuleState
+def test():
+    print('a')
 
-b = {
-    '1':1,
-    '2':2,
-    '3':3
-}
-a = {
-    'a':b,
-    'd':[1,2,3,4]
-}
-nn = a['a']['1']
-print(nn)
-# nnn = nn['b']
-# print(nnn)
+b = {'a':test}
+
+c = 'a'
+if c in b:
+    print('c')
+    print(b[c])
