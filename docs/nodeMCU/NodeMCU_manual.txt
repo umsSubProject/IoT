@@ -1,0 +1,8 @@
+아두이노 설치 후 설정
+
+1. 보드 확장
+  1) 파일 -> 환경설정 -> 추가적인 보드매니저 URLs에 다음을 입력
+    http://arduino.esp8266.com/stable/package_esp8266com_index.json
+  2) 툴 -> 보드 -> 보드매니저 에서 esp8266 검색 후 설치(NodeMCU1.0)
+
+    
